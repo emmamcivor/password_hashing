@@ -1,0 +1,12 @@
+48-122: diff= 74 
+
+turn bytes into set of numbers bw 0 and 70
+byte 0-255
+turn byte into number 0-70
+
+loop over bytes
+     modulo by 70 (turn into unsigned int)
+
+binary to decimal? turn byte into number btw 0-70
+
+
