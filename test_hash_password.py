@@ -43,5 +43,14 @@ class test_output_characteristics_hashing(unittest.TestCase):
         password = hash_password.SHA256_hash(general,salt)
         self.assertEqual(len(password),12)
 
+## Test the character substitution
+class test_char_sub(unittest.TestCase):           
+    def test_sub(self):
+        # check the output is a string
+        password = 'password[\]`'
+        new_password = hash_password.substitute_chars(password)
+        self.assertEqual(new_password,'password!%&*')
+
+
 if __name__ == '__main__':
     unittest.main()

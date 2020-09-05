@@ -2,6 +2,7 @@
 
 import hashlib
 import binascii
+import copy
 
 def convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash):
     ''' This function takes a bytes object (list of integers between 0 and 255) and converts them into characters from a defined set of characters. 
@@ -26,7 +27,29 @@ char_str: a string of characters that represents the digest_hash
         char = chr(adjusted_decimal_int)
         char_str += char
 
-    return char_str
+    return char_str 
+
+def substitute_chars(password):
+    ''' I want to substitute the following characters:
+[ --> !
+\ --> %
+] --> &
+` --> *
+
+Inputs
+=====
+password: hashed password with characters in allowed range
+
+Outputs
+======
+new_password: with special characters substituted '''
+
+    password_0 = password.replace('[','!')
+    password_1 = password_0.replace('\\','%')
+    password_2 = password_1.replace(']','&')
+    new_password = password_2.replace('`','*')
+    
+    return new_password
 
 def SHA256_hash(general, salt):
     ''' This function uses SHA256 to create a hash.
@@ -51,5 +74,7 @@ password: This is a string of length 12 which is an ascii representation of the 
     char_str = convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash)
 
     password = char_str[0:12]
+    new_password = 
+substitute_chars(password)
 
-    return password
+    return new_password
