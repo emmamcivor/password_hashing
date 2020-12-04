@@ -3,6 +3,7 @@
 import hashlib
 import binascii
 import copy
+import numpy as np
 
 def convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash):
     ''' This function takes a bytes object (list of integers between 0 and 255) and converts them into characters from a defined set of characters. 
@@ -41,6 +42,7 @@ Inputs
 password: hashed password with characters in allowed range
 
 Outputs
+password: hashed password with characters in user-defined range
 ======
 new_password: with special characters substituted '''
 
@@ -50,6 +52,45 @@ new_password: with special characters substituted '''
     new_password = password_2.replace('`','*')
     
     return new_password
+
+def check_char_existence(password, char_type):
+    ''' I want to check whether the password characters contain a particular character e.g. lowercase letter, uppercase letter, digit and special character and return "true" if the password contains the character and false if not.
+
+Inputs
+======
+password: hashed password with characters in user-defined range
+char_type: string containing the character type I am looking for
+
+Output
+=====
+True/False: String containing either "true" or "false" depending on whether character is in password
+'''
+    lower_ord_min = 97
+    lower_ord_max = 122
+
+    upper_ord_min = 65
+    upper_ord_max = 90
+
+    digit_ord_min = 48
+    digit_ord_max = 57
+
+    special_ord_min = 33
+
+    password_ord = np.zeros(len(password))
+    print(password)
+    for i in range(len(password)):
+        print(i)
+        password_ord[i] = ord(password[i])
+        print(password_ord[i])
+    if char_type == 'lower':
+        output = any(lower_ord_min<=char_type<=lower_ord_max)
+    elif char_type == 'upper':
+        output = any(upper_ord_min<=char_type<=upper_ord_max)
+    elif char_type == 'digit':
+        output = any(digit_ord_min<=char_type<=digit_ord_max)
+    elif char_type == 'special':
+        output = any(special_ord_min<=char_type<digit_ord_min or digit_ord_max<char_type<upper_ord_min or upper_ord_max<char_type<lower_ord_min)
+                
 
 def SHA256_hash(general, salt):
     ''' This function uses SHA256 to create a hash.
@@ -74,7 +115,6 @@ password: This is a string of length 12 which is an ascii representation of the 
     char_str = convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash)
 
     password = char_str[0:12]
-    new_password = 
-substitute_chars(password)
+    new_password = substitute_chars(password)
 
     return new_password
