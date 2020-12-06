@@ -49,3 +49,6 @@ See: https://docs.python.org/3/library/stdtypes.html#bytes.
 
 
 chr(i): This is an in-built python function that returns the string representing the character whose Unicode code point is the integer i. For example, chr(51) returns the string '3'. Decimals 0-255 represent the same character when using Unicode and ASCII.  
+
+
+blog with simple python code running on a free website  --> https://blog.pythonanywhere.com/169/
