@@ -41,6 +41,8 @@ Method:
 
 - use the first 12 characters as the new password
 
+- if there is a symbol character in positions 0-11 of the password then use the 12th password position. Otherwise, iterate over the 12th character until it is a symbol character
+
 *** need to think about the case where an illegal symbol occurs and the case where a symbol does not occur ***
 =====
 list(bytes_obj): You can convert a bytes object, bytes_obj into a list of integers using list(bytes_obj). Note: the bytes object is a sequence of integers where each integer is in 0-255

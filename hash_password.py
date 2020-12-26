@@ -53,44 +53,59 @@ new_password: with special characters substituted '''
     
     return new_password
 
-def check_char_existence(password, char_type):
-    ''' I want to check whether the password characters contain a particular character e.g. lowercase letter, uppercase letter, digit and special character and return "true" if the password contains the character and false if not.
+def is_char_special(character):
+    ''' I want to check whether a character is a special symbol
 
-Inputs
-======
-password: hashed password with characters in user-defined range
-char_type: string containing the character type I am looking for
-
-Output
-=====
-True/False: String containing either "true" or "false" depending on whether character is in password
+input: character
+output: special_char-query = True, False (Boolean)
 '''
-    lower_ord_min = 97
-    lower_ord_max = 122
+    min_ord_special_1 = 33
+    max_ord_special_1 = 47
+    min_ord_special_2 = 58
+    max_ord_special_2 = 64
+    min_ord_special_3 = 91
+    max_ord_special_3 = 96
 
-    upper_ord_min = 65
-    upper_ord_max = 90
+    if min_ord_special_1<=ord(character)<=max_ord_special_1:
+        special_char_query = True
+    elif min_ord_special_2<=ord(character)<=max_ord_special_2:
+        special_char_query = True
+    elif min_ord_special_3<=ord(character)<=max_ord_special_3:
+        special_char_query = True
+    else:
+        special_char_query = False
+    
+    return special_char_query
 
-    digit_ord_min = 48
-    digit_ord_max = 57
+def password_contains_special_char(password):
+    ''' I want to check whether the hashed password contains at least one special character
 
-    special_ord_min = 33
 
-    password_ord = np.zeros(len(password))
-    print(password)
-    for i in range(len(password)):
-        print(i)
-        password_ord[i] = ord(password[i])
-        print(password_ord[i])
-    if char_type == 'lower':
-        output = any(lower_ord_min<=char_type<=lower_ord_max)
-    elif char_type == 'upper':
-        output = any(upper_ord_min<=char_type<=upper_ord_max)
-    elif char_type == 'digit':
-        output = any(digit_ord_min<=char_type<=digit_ord_max)
-    elif char_type == 'special':
-        output = any(special_ord_min<=char_type<digit_ord_min or digit_ord_max<char_type<upper_ord_min or upper_ord_max<char_type<lower_ord_min)
-                
+input: password
+output: True, False (Boolean)
+'''
+
+    password_special_char_query = []
+    
+    for char in password:
+        special_char_query = is_char_special(char)
+        password_special_char_query.append(special_char_query)
+
+
+    return any(password_special_char_query)
+
+def update_password_special_character(password, max_acceptable_decimal):
+    ''' I want to modfiy the final character in the password to be a special character if there are no special characters in the password'''
+
+    char = password[-1]
+    mod_number = max_acceptable_decimal+1
+
+    while is_char_special(char)==False:
+        char = chr((ord(char)+10)%mod_number)
+
+    new_password = password[0:-1] + char
+
+    return new_password
 
 def SHA256_hash(general, salt):
     ''' This function uses SHA256 to create a hash.
@@ -110,7 +125,7 @@ password: This is a string of length 12 which is an ascii representation of the 
 
     digest_hash = hashlib.sha256(general_byte+salt_byte).digest()
 
-    min_acceptable_decimal = 48
+    min_acceptable_decimal = 33
     max_acceptable_decimal = 122
     char_str = convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash)
 

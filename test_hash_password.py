@@ -46,11 +46,64 @@ class test_output_characteristics_hashing(unittest.TestCase):
 ## Test the character substitution
 class test_char_sub(unittest.TestCase):           
     def test_sub(self):
-        # check the output is a string
         password = 'password[\]`'
         new_password = hash_password.substitute_chars(password)
         self.assertEqual(new_password,'password!%&*')
 
+## Test function to identify special characters
+class test_is_special_char(unittest.TestCase):           
+    def test_symbols_1(self):
+        output = hash_password.is_char_special('%')
+        self.assertEqual(output,True)
+
+    def test_symbols_2(self):
+        output = hash_password.is_char_special('=')
+        self.assertEqual(output,True)
+
+    def test_symbols_3(self):
+        output = hash_password.is_char_special('a')
+        self.assertEqual(output,False)
+
+    def test_symbols_4(self):
+        output = hash_password.is_char_special('A')
+        self.assertEqual(output,False)
+
+## Test function to identify whether special character is in password
+class test_password_special_char(unittest.TestCase):           
+    def test_symbols_1(self):
+        password = 'abAB'    
+        output = hash_password.password_contains_special_char(password)
+        self.assertEqual(output,False)
+
+    def test_symbols_2(self):
+        password = 'abAB123'    
+        output = hash_password.password_contains_special_char(password)
+        self.assertEqual(output,False)
+
+    def test_symbols_3(self):
+        password = 'abAB%='    
+        output = hash_password.password_contains_special_char(password)
+        self.assertEqual(output,True)
+
+## Test function to update password to include a special character
+class test_update_with_special_char(unittest.TestCase):           
+    def test_pw_1(self):
+        password = 'test5'
+        max_acceptable_decimal = 122
+        output = hash_password.update_password_special_character(password,max_acceptable_decimal)
+        self.assertEqual(output,'test?')
+
+    def test_pw_2(self):
+        password = 'test7'
+        max_acceptable_decimal = 122
+        output = hash_password.update_password_special_character(password,max_acceptable_decimal)
+        self.assertEqual(output,'test_')
+
+    def test_pw_3(self):
+        password = 'testq'
+        max_acceptable_decimal = 122
+        output = hash_password.update_password_special_character(password,max_acceptable_decimal)
+        self.assertEqual(output,'test(')
 
 if __name__ == '__main__':
     unittest.main()
