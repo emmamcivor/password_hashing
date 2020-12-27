@@ -48,7 +48,7 @@ class test_char_sub(unittest.TestCase):
     def test_sub(self):
         password = 'password[\]`'
         new_password = hash_password.substitute_chars(password)
-        self.assertEqual(new_password,'password!%&*')
+        self.assertEqual(new_password,'password[\]*')
 
 ## Test function to identify special characters
 class test_is_special_char(unittest.TestCase):           
@@ -104,6 +104,26 @@ class test_update_with_special_char(unittest.TestCase):
         max_acceptable_decimal = 122
         output = hash_password.update_password_special_character(password,max_acceptable_decimal)
         self.assertEqual(output,'test(')
+
+    def test_pw_4(self):
+        password = 'test('
+        max_acceptable_decimal = 122
+        output = hash_password.update_password_special_character(password,max_acceptable_decimal)
+        self.assertEqual(output,'test(')
+
+## Test function to update password to include a special character
+class test_ensure_password_special_char(unittest.TestCase):           
+    def test_pw_sc_1(self):
+        password = 'test5'
+        max_acceptable_decimal = 122
+        output = hash_password.ensure_password_contains_special_char(password, max_acceptable_decimal)
+        self.assertEqual(output,'test?')
+
+    def test_pw_sc_2(self):
+        password = 'test%'
+        max_acceptable_decimal = 122
+        output = hash_password.ensure_password_contains_special_char(password, max_acceptable_decimal)
+        self.assertEqual(output,'test%')
 
 if __name__ == '__main__':
     unittest.main()

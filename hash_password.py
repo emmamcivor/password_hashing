@@ -6,12 +6,12 @@ import copy
 import numpy as np
 
 def convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash):
-    ''' This function takes a bytes object (list of integers between 0 and 255) and converts them into characters from a defined set of characters. 
+    ''' This function takes a bytes object (list of integers between 0 and 255) and converts them into characters. I have restricted the character set to a subset of the ASCII character set. Characters in this restricted set can be used in the password.
 
 Inputs
 =====
-min_acceptable_decimal: decimal number (between 0 and 255) representing the start of the character set
-max_acceptable_decimal: decimal number (between 0 and 255) representing the end of the character set
+min_acceptable_decimal: decimal number (between 0 and 255) representing the start of the character set that will be used in the password
+max_acceptable_decimal: decimal number (between 0 and 255) representing the end of the character set that will be used in the password
 digest_hash: the bytes object that we want to convert from bytes into characters
 
 Outputs
@@ -31,33 +31,31 @@ char_str: a string of characters that represents the digest_hash
     return char_str 
 
 def substitute_chars(password):
-    ''' I want to substitute the following characters:
-[ --> !
-\ --> %
-] --> &
+    ''' This function substitutes the following characters in a password:
 ` --> *
 
 Inputs
 =====
-password: hashed password with characters in allowed range
+password: current set of characters in hashed password
 
 Outputs
-password: hashed password with characters in user-defined range
 ======
-new_password: with special characters substituted '''
+new_password: password with special characters substituted 
+'''
 
-    password_0 = password.replace('[','!')
-    password_1 = password_0.replace('\\','%')
-    password_2 = password_1.replace(']','&')
-    new_password = password_2.replace('`','*')
+    new_password = password.replace('`','*')
     
     return new_password
 
 def is_char_special(character):
-    ''' I want to check whether a character is a special symbol
+    ''' This function determines whether a character is a special symbol character.
 
-input: character
-output: special_char-query = True, False (Boolean)
+inputs
+======
+character: single character 
+outputs
+======
+special_char_query: Boolean (True or False) representation of the result of whether the input character is a special symbol
 '''
     min_ord_special_1 = 33
     max_ord_special_1 = 47
@@ -78,11 +76,15 @@ output: special_char-query = True, False (Boolean)
     return special_char_query
 
 def password_contains_special_char(password):
-    ''' I want to check whether the hashed password contains at least one special character
+    ''' This function determines whether the password contains at least one special symbol character.
 
 
-input: password
-output: True, False (Boolean)
+inputs
+======
+password: current set of characters in hashed password
+outputs
+======
+Boolean (True, False) representation of the result of whether the password contains at least one special symbol character
 '''
 
     password_special_char_query = []
@@ -95,7 +97,17 @@ output: True, False (Boolean)
     return any(password_special_char_query)
 
 def update_password_special_character(password, max_acceptable_decimal):
-    ''' I want to modfiy the final character in the password to be a special character if there are no special characters in the password'''
+    ''' This function takes the final character in the password and if the character is not a special symbol character then the function iterates forwards by 10 places (up to the maximum of the character set) and the character is iterated over in this manner until the character is a special symbol character.
+
+inputs
+======
+password: current set of characters in hashed password
+max_acceptable_decimal: decimal number (between 0 and 255) representing the end of the character set that will be used in the password
+
+outputs
+======
+new_password: password containing at least one special symbol character
+'''
 
     char = password[-1]
     mod_number = max_acceptable_decimal+1
@@ -107,8 +119,29 @@ def update_password_special_character(password, max_acceptable_decimal):
 
     return new_password
 
+def ensure_password_contains_special_char(password, max_acceptable_decimal):
+    ''' This function ensures that the password contains at least one special symbol character. First, the functions determines whether the password contains a special character. If the password contains a special character this password is returned. If the password does not contain a special character then the final character is modified to be a special character.
+
+inputs
+======
+password: current set of characters in hashed password
+max_acceptable_decimal: decimal number (between 0 and 255) representing the end of the character set that will be used in the password
+
+outputs
+======
+new_password: password containing at least one special symbol character
+'''
+
+    password_query = password_contains_special_char(password)
+    if password_query == False:
+        new_password = update_password_special_character(password, max_acceptable_decimal)
+    else:
+        new_password = password
+
+    return new_password    
+
 def SHA256_hash(general, salt):
-    ''' This function uses SHA256 to create a hash.
+    ''' This function uses SHA256 to create a hashed password.
 
 Inputs
 ======
@@ -117,7 +150,7 @@ salt: This is a string which contains a piece of random data for the password. T
 
 Outputs
 ======
-password: This is a string of length 12 which is an ascii representation of the hash digest
+final_password: This is a string of length 12 which is an ascii representation of the hash digest and contains at least one special symbol character
 '''
 
     general_byte = general.encode()
@@ -130,6 +163,9 @@ password: This is a string of length 12 which is an ascii representation of the 
     char_str = convert_bytes_char_str(min_acceptable_decimal,max_acceptable_decimal,digest_hash)
 
     password = char_str[0:12]
-    new_password = substitute_chars(password)
+    new_password = ensure_password_contains_special_char(password, max_acceptable_decimal)
+    final_password = substitute_chars(new_password)
 
-    return new_password
+    return final_password
+
+
